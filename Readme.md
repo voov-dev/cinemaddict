@@ -1,7 +1,8 @@
 # Проект «Киноман»
 
-* Студент: [Владимир Остапов](https://up.htmlacademy.ru/ecmascript/17/user/471137).
-* Наставник: `Неизвестно`.
+- Студент: [Владимир Остапов](https://up.htmlacademy.ru/ecmascript/17/user/471137).
+- Наставник: [Дарья
+  Сюткина](https://htmlacademy.ru/profile/id1960205).
 
 ---
 
