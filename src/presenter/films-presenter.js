@@ -1,7 +1,7 @@
 import { render } from '../render';
 import FilmsView from '../view/films-view';
 import FilmsListContainerView from '../view/films-list-container-view';
-import FilmsListView from '../view/films-list-view'
+import FilmsListView from '../view/films-list-view';
 import FilmCardView from '../view/film-card-view';
 import ShowMoreView from '../view/show-more-view';
 
