@@ -18,7 +18,7 @@ const createFilmCardDetailsTemplate = (filmCard) => {
     release,
     description
   } = filmCard.filmInfo;
-  const {watchlist, alreadyWatched, favorite} = film.userDetails;
+  const {watchlist, alreadyWatched, favorite} = filmCard.userDetails;
 
   const watchlistClassName = watchlist ? 'film-details__control-button--active' : '';
   const alreadyWatchedClassName = alreadyWatched ? 'film-details__control-button--active' : '';
