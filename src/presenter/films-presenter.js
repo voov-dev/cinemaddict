@@ -17,10 +17,13 @@ export default class FilmsPresenter {
     this.showMoreComponent = new ShowMoreView();
   }
 
-  init() {
+  init(filmsModel) {
+    this.filmsModel = filmsModel;
+
     for (let i = 0; i < MAX_CARDS; i++) {
-      render(new FilmCardView(), this.filmsListContainerComponent.getElement());
+      render(new FilmCardView(this.filmsModel[i]), this.filmsListContainerComponent.getElement());
     }
+
     render(this.filmsListContainerComponent, this.filmsListComponent.getElement());
     render(this.filmsListComponent, this.FilmsComponent.getElement());
     render(this.showMoreComponent, this.filmsListComponent.getElement());
