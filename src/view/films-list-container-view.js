@@ -1,3 +1,4 @@
+import { createElement } from '../render.js';
 import { AbstractView } from './abstract-view';
 
 const createFilmsListContainerTemplate = () => (
@@ -5,12 +6,23 @@ const createFilmsListContainerTemplate = () => (
 );
 
 class FilmsListContainerView extends AbstractView {
+  #element;
+
   constructor() {
     super();
+    this.#element = null;
   }
 
-  getTemplate() {
+  get #template() {
     return createFilmsListContainerTemplate();
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.#template);
+    }
+
+    return this.#element;
   }
 }
 
