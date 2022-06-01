@@ -1,12 +1,10 @@
 export class AbstractView {
-  #element;
+  #element = null;
 
   constructor() {
     if (new.target === AbstractView) {
       throw new Error('Can\'t instantiate AbstractView, only concrete one.');
     }
-
-    this.#element = null;
   }
 
   get #template() {

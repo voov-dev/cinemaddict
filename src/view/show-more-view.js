@@ -6,11 +6,10 @@ const createShowMoreTemplate = () => (
 );
 
 class ShowMoreView extends AbstractView {
-  #element;
+  #element = null;
 
   constructor() {
     super();
-    this.#element = null;
   }
 
   get #template() {

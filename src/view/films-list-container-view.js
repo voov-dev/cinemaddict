@@ -6,11 +6,10 @@ const createFilmsListContainerTemplate = () => (
 );
 
 class FilmsListContainerView extends AbstractView {
-  #element;
+  #element = null;
 
   constructor() {
     super();
-    this.#element = null;
   }
 
   get #template() {

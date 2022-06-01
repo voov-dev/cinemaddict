@@ -11,11 +11,10 @@ const createMainNavigationTemplate = () => (
 );
 
 class MainNavigationView extends AbstractView {
-  #element;
+  #element = null;
 
   constructor() {
     super();
-    this.#element = null;
   }
 
   get #template() {

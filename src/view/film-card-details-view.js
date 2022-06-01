@@ -142,12 +142,11 @@ const createFilmCardDetailsTemplate = (filmCard) => {
 };
 
 class FilmCardDetailsView extends AbstractView {
-  #element;
+  #element = null;
   #filmCard;
 
   constructor(filmCard) {
     super();
-    this.#element = null;
     this.#filmCard = filmCard;
   }
 

@@ -9,12 +9,11 @@ const createProfileTemplate = (rating) => (
 );
 
 class ProfileView extends AbstractView {
-  #element;
+  #element = null;
   #rating;
 
   constructor(rating) {
     super();
-    this.#element = null;
     this.#rating = rating;
   }
 

@@ -10,11 +10,10 @@ const createSortTemplate = () => (
 );
 
 class SortView extends AbstractView {
-  #element;
+  #element = null;
 
   constructor() {
     super();
-    this.#element = null;
   }
 
   get #template() {
