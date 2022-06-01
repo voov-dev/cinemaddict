@@ -1,3 +1,4 @@
+import { createElement } from '../render.js';
 import { AbstractView } from './abstract-view';
 
 const createProfileTemplate = (rating) => (
@@ -8,13 +9,24 @@ const createProfileTemplate = (rating) => (
 );
 
 class ProfileView extends AbstractView {
+  #element = null;
+  #rating;
+
   constructor(rating) {
     super();
-    this.rating = rating;
+    this.#rating = rating;
   }
 
-  getTemplate() {
-    return createProfileTemplate(this.rating);
+  get #template() {
+    return createProfileTemplate(this.#rating);
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.#template);
+    }
+
+    return this.#element;
   }
 }
 

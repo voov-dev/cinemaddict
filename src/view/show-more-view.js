@@ -1,3 +1,4 @@
+import { createElement } from '../render.js';
 import { AbstractView } from './abstract-view';
 
 const createShowMoreTemplate = () => (
@@ -5,12 +6,22 @@ const createShowMoreTemplate = () => (
 );
 
 class ShowMoreView extends AbstractView {
+  #element = null;
+
   constructor() {
     super();
   }
 
-  getTemplate() {
+  get #template() {
     return createShowMoreTemplate();
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.#template);
+    }
+
+    return this.#element;
   }
 }
 

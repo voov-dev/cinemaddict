@@ -1,7 +1,8 @@
+import { createElement } from '../render.js';
 import { AbstractView } from './abstract-view';
 import { getFormatedRuntime } from '../mock/utils.js';
-import { randomComments } from '../mock/comments.js';
 import dayjs from 'dayjs';
+import CommentsModel from '../model/comments-model.js';
 
 const createFilmCardDetailsTemplate = (filmCard) => {
   const {
@@ -25,7 +26,7 @@ const createFilmCardDetailsTemplate = (filmCard) => {
   const favoriteClassName = favorite ? 'film-details__control-button--active' : '';
 
   const commentsId = filmCard.comments;
-  const filmComments = randomComments.filter((comment) => commentsId.includes(comment.id));
+  const filmComments = new CommentsModel().comments.filter((comment) => commentsId.includes(comment.id));
 
   return (
     `<section class="film-details">
@@ -141,13 +142,24 @@ const createFilmCardDetailsTemplate = (filmCard) => {
 };
 
 class FilmCardDetailsView extends AbstractView {
+  #element = null;
+  #filmCard;
+
   constructor(filmCard) {
     super();
-    this.filmCard = filmCard;
+    this.#filmCard = filmCard;
   }
 
-  getTemplate() {
-    return createFilmCardDetailsTemplate(this.filmCard);
+  get #template() {
+    return createFilmCardDetailsTemplate(this.#filmCard);
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.#template);
+    }
+
+    return this.#element;
   }
 }
 
