@@ -1,4 +1,4 @@
-import { render } from '../render';
+import { render } from '../framework/render.js';
 import FilmsView from '../view/films-view';
 import FilmsListContainerView from '../view/films-list-container-view';
 import FilmsListView from '../view/films-list-view';
@@ -42,7 +42,7 @@ export default class FilmsPresenter {
     if (this.#filmsModel.length > this.#renderedFilmsCount) {
       render(this.showMoreComponent, this.filmsListComponent.element);
 
-      this.showMoreComponent.element.addEventListener('click', this.#onLoadMore);
+      this.showMoreComponent.setClickHandler(this.#onLoadMore);
     }
 
     render(this.FilmsComponent, this.filmsWrapper);
@@ -52,7 +52,6 @@ export default class FilmsPresenter {
     const filmComponent = new FilmCardView(film);
     const popupComponent = new FilmCardDetailsView(film);
     const popupContainerElement = document.querySelector('body');
-    const popupCloseButtonElement = popupComponent.element.querySelector('.film-details__close-btn');
 
     const onEscKeyDown = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
@@ -69,7 +68,7 @@ export default class FilmsPresenter {
       popupContainerElement.classList.add('hide-overflow');
       popupContainerElement.appendChild(popupComponent.element);
 
-      popupCloseButtonElement.addEventListener('click', closePopup);
+      popupComponent.setCloseHandler(closePopup);
       document.addEventListener('keydown', onEscKeyDown);
     };
 
@@ -77,17 +76,16 @@ export default class FilmsPresenter {
       popupContainerElement.classList.remove('hide-overflow');
       popupContainerElement.removeChild(popupComponent.element);
 
-      popupCloseButtonElement.removeEventListener('click', closePopup);
+      popupComponent.setCloseHandler(closePopup);
       document.removeEventListener('keydown', onEscKeyDown);
     }
 
-    filmComponent.element.querySelector('.film-card__link').addEventListener('click', openPopup);
+    filmComponent.setClickHandler(openPopup);
 
     render(filmComponent, this.filmsListContainerComponent.element);
   };
 
-  #onLoadMore = (evt) => {
-    evt.preventDefault();
+  #onLoadMore = () => {
     let newRenderedFilmsCount = this.#renderedFilmsCount + MAX_CARDS;
 
     if (this.#filmsModel.length <= newRenderedFilmsCount) {

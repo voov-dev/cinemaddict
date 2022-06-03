@@ -1,5 +1,4 @@
-import { createElement } from '../render.js';
-import { AbstractView } from './abstract-view';
+import AbstractView from '../framework/view/abstract-view.js';
 import { getFormatedRuntime } from '../mock/utils.js';
 import dayjs from 'dayjs';
 import CommentsModel from '../model/comments-model.js';
@@ -24,7 +23,6 @@ const createFilmCardDetailsTemplate = (filmCard) => {
   const watchlistClassName = watchlist ? 'film-details__control-button--active' : '';
   const alreadyWatchedClassName = alreadyWatched ? 'film-details__control-button--active' : '';
   const favoriteClassName = favorite ? 'film-details__control-button--active' : '';
-
   const commentsId = filmCard.comments;
   const filmComments = new CommentsModel().comments.filter((comment) => commentsId.includes(comment.id));
 
@@ -141,8 +139,7 @@ const createFilmCardDetailsTemplate = (filmCard) => {
   );
 };
 
-class FilmCardDetailsView extends AbstractView {
-  #element = null;
+export default class FilmCardDetailsView extends AbstractView {
   #filmCard;
 
   constructor(filmCard) {
@@ -150,17 +147,17 @@ class FilmCardDetailsView extends AbstractView {
     this.#filmCard = filmCard;
   }
 
-  get #template() {
+  get template() {
     return createFilmCardDetailsTemplate(this.#filmCard);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.#template);
-    }
+  setCloseHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeButtonHandler);
+  };
 
-    return this.#element;
-  }
+  #closeButtonHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  };
 }
-
-export default FilmCardDetailsView;
