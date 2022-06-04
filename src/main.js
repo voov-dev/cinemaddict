@@ -1,5 +1,4 @@
 import { render } from './render';
-import MainNavigationView from './view/main-navigation-view';
 import SortView from './view/sort-view';
 import ProfileView from './view/profile-view';
 import FilmsModel from './model/films-model.js';
@@ -9,7 +8,6 @@ const pageHeaderElement = document.querySelector('.header');
 const pageMainElement = document.querySelector('.main');
 
 render(new ProfileView(), pageHeaderElement, 'beforeend');
-render(new MainNavigationView(), pageMainElement);
 render(new SortView(), pageMainElement);
 
 const filmsModel = new FilmsModel().getFilms();

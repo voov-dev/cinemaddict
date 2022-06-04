@@ -6,6 +6,7 @@ import FilmsListEmptyView from '../view/films-list-empty-view';
 import FilmCardView from '../view/film-card-view';
 import ShowMoreView from '../view/show-more-view';
 import FilmCardDetailsView from '../view/film-card-details-view';
+import MainNavigationView from '../view/main-navigation-view.js';
 
 const MAX_CARDS = 5;
 
@@ -25,6 +26,7 @@ export default class FilmsPresenter {
 
   init(filmsModel) {
     this.#filmsModel = filmsModel;
+    this.mainNavigationComponent = new MainNavigationView(this.#filmsModel);
 
     if (!this.#filmsModel.length) {
       render(this.filmsListEmptyComponent, this.filmsListContainerComponent.element);
@@ -34,6 +36,8 @@ export default class FilmsPresenter {
       }
 
       this.#renderedFilmsCount = Math.min(MAX_CARDS, this.#filmsModel.length);
+      render(this.mainNavigationComponent, this.filmsWrapper);
+      this.mainNavigationComponent.setClickHandler(this.#onMainNavigationItem);
     }
 
     render(this.filmsListContainerComponent, this.filmsListComponent.element);
@@ -99,5 +103,9 @@ export default class FilmsPresenter {
       .slice(this.#renderedFilmsCount, newRenderedFilmsCount)
       .forEach((item) => this.#renderFilmCard(item));
     this.#renderedFilmsCount = newRenderedFilmsCount;
+  };
+
+  #onMainNavigationItem = () => {
+    // добавлю перерисовку в следующем задании
   };
 }
