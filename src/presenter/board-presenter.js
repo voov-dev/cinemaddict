@@ -1,20 +1,20 @@
+import { remove, render } from '../framework/render';
 import MoviesView from '../view/movies-view';
 import SortView from '../view/sort-view';
 import MoviesList from '../view/movies-list-view';
 import ButtonShowMoreView from '../view/button-show-more-view';
 import MoviesListContainerView from '../view/movies-list-container-view';
 import MoviesExtraView from '../view/movies-extra-view';
-import {remove, render} from '../framework/render';
 import MoviesListTitleView from '../view/movies-list-title-view';
 import MoviesListEmptyView from '../view/movies-list-empty-view';
 import MoviePresenter from './movie-presenter';
-import {updateItem} from '../utils/common';
-import {sortByDate, sortByRating} from '../utils/movie';
-import {SortType} from '../const';
+import { updateItem } from '../utils/common';
+import { sortByDate, sortByRating } from '../utils/movie';
+import { SortType } from '../const';
 
 const MOVIES_COUNT_PER_STEP = 5;
 
-export default class MainPresenter {
+export default class BoardPresenter {
   #popupContainer = null;
   #moviesContainer = null;
   #moviesModel = null;
