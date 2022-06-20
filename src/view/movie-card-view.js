@@ -4,16 +4,17 @@ import { humanizeMovieReleaseYearDate, getTimeFromMins } from '../utils/movie';
 const createMovieCardTemplate = (movie, comments) => {
   const { title, description, totalRating, poster, runtime, genre } = movie.filmInfo;
   const { date } = movie.filmInfo.release;
-  const movieComments = comments.filter((comment) => movie.comments.includes(comment.id));
-  const commentsAmount = movieComments.length;
+  const commentsAmount = comments.length;
   const releaseDate = humanizeMovieReleaseYearDate(date);
   const filmDuration = getTimeFromMins(runtime);
   const activeMovieControlsClassname = 'film-card__controls-item--active';
+  const descriptionLength = description.length;
 
   const createMovieControlsTemplate = (userDetails, activeClass) => (`
-  <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${userDetails.watchlist ? activeClass : ''}" type="button">Add to watchlist</button>
-  <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${userDetails.alreadyWatched ? activeClass : ''}" type="button">Mark as watched</button>
-  <button class="film-card__controls-item film-card__controls-item--favorite ${userDetails.favorite ? activeClass : ''}" type="button">Mark as favorite</button>`);
+    <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${userDetails.watchlist ? activeClass : ''}" type="button">Add to watchlist</button>
+    <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${userDetails.alreadyWatched ? activeClass : ''}" type="button">Mark as watched</button>
+    <button class="film-card__controls-item film-card__controls-item--favorite ${userDetails.favorite ? activeClass : ''}" type="button">Mark as favorite</button>
+  `);
 
   const movieControlsTemplate = createMovieControlsTemplate(movie.userDetails, activeMovieControlsClassname);
 
@@ -28,7 +29,7 @@ const createMovieCardTemplate = (movie, comments) => {
           <span class="film-card__genre">${genre[0]}</span>
         </p>
         <img src="${poster}" alt="" class="film-card__poster">
-        <p class="film-card__description">${description}</p>
+        <p class="film-card__description">${descriptionLength < 140 ? description : `${description.substr(0, 139)}...`}</p>
         <span class="film-card__comments">${commentsAmount} comments</span>
       </a>
       <div class="film-card__controls">

@@ -1,20 +1,18 @@
 import { render, replace, remove } from '../framework/render.js';
 import FiltersView from '../view/filters-view.js';
-import { filter } from '../utils/filter.js';
+import { Filter } from '../utils/filter.js';
 import { FilterType, UpdateType } from '../const.js';
 
 export default class FilterPresenter {
   #filterContainer = null;
   #filterModel = null;
   #moviesModel = null;
-
   #filterComponent = null;
 
   constructor(filterContainer, filterModel, moviesModel) {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
     this.#moviesModel = moviesModel;
-
     this.#moviesModel.addObserver(this.#onModelEvent);
     this.#filterModel.addObserver(this.#onModelEvent);
   }
@@ -31,17 +29,17 @@ export default class FilterPresenter {
       {
         type: FilterType.WATCHLIST,
         name: 'Watchlist',
-        count: movies.filter(filter.watchlist).length,
+        count: movies.filter(Filter.watchlist).length,
       },
       {
         type: FilterType.HISTORY,
         name: 'History',
-        count: movies.filter(filter.history).length,
+        count: movies.filter(Filter.history).length,
       },
       {
         type: FilterType.FAVORITE,
         name: 'Favorite',
-        count: movies.filter(filter.favorite).length,
+        count: movies.filter(Filter.favorite).length,
       },
     ];
   }

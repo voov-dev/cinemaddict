@@ -22,7 +22,8 @@ const UserAction = {
 const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
-  MAJOR: 'MAJOR'
+  MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
 const NoMoviesTextType = {
@@ -32,4 +33,28 @@ const NoMoviesTextType = {
   [FilterType.FAVORITE]: 'There are no favorite movies now',
 };
 
-export { EMOTIONS, FilterType, SortType, UserAction, UpdateType, NoMoviesTextType };
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
+};
+
+const UserRank = {
+  NOVICE: 'Novice',
+  FAN: 'Fan',
+  MOVIE_BUFF: 'Movie Buff'
+};
+
+const UserHistory = {
+  NOVICE: 1,
+  FAN: 11,
+  MOVIE_BUFF: 21
+};
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
+export { EMOTIONS, FilterType, SortType, UserAction, UpdateType, NoMoviesTextType, Method, UserRank, UserHistory, TimeLimit };
