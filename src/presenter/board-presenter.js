@@ -38,8 +38,8 @@ export default class BoardPresenter {
     this.#moviesModel = moviesModel;
     this.#commentsModel = commentsModel;
     this.#popupContainer = popupContainer;
-    this.#moviesModel.addObserver(this.#onModelEvent);
-    this.#filterModel.addObserver(this.#onModelEvent);
+    this.#moviesModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   #moviesComponent = new MoviesView();
@@ -69,6 +69,7 @@ export default class BoardPresenter {
     this.#filterType = this.#filterModel.filter;
     const movies = this.#moviesModel.movies;
     const filteredMovies = [];
+
     for (const movie of movies) {
       if(Filter[this.#filterType](movie)) {
         filteredMovies.push(movie);
@@ -91,7 +92,7 @@ export default class BoardPresenter {
 
   #renderSorting() {
     this.#sortComponent = new SortView(this.#currentSortType);
-    this.#sortComponent.setSortTypeChangeHandler(this.#onClickSortTypeChange);
+    this.#sortComponent.setSortTypeClickHandler(this.#handleSortTypeClick);
     render(this.#sortComponent, this.#moviesContainer);
   }
 
@@ -111,7 +112,7 @@ export default class BoardPresenter {
       return;
     }
 
-    const moviePresenter = new MoviePresenter(container, this.#footerElement, this.#onViewAction, this.#onClickPopupReset, this.#commentsModel, this.#popupContainer);
+    const moviePresenter = new MoviePresenter(container, this.#footerElement, this.#handleViewAction, this.#resetPopup, this.#commentsModel, this.#popupContainer);
 
     moviePresenter.init(movie);
     mapPresenters.set(movie.id, moviePresenter);
@@ -120,7 +121,7 @@ export default class BoardPresenter {
   #renderShowMoreButton() {
     this.#buttonShowMoreComponent = new ButtonShowMoreView();
     render(this.#buttonShowMoreComponent, this.#moviesListComponent.element);
-    this.#buttonShowMoreComponent.setShowMoviesHandler(this.#onClickShowMore);
+    this.#buttonShowMoreComponent.setShowMoreClickHandler(this.#handleShowMoviesClick);
   }
 
   #renderMostRated() {
@@ -202,7 +203,7 @@ export default class BoardPresenter {
     render(this.#moviesStatisticsComponent, siteFooterStatisticsElement);
   }
 
-  #onClickShowMore = () => {
+  #handleShowMoviesClick = () => {
     const moviesCount = this.movies.length;
     const newRenderedMoviesCount = Math.min(moviesCount, this.#renderedMoviesCount + MOVIES_COUNT_PER_STEP);
     const movies = this.movies.slice(this.#renderedMoviesCount, newRenderedMoviesCount);
@@ -224,7 +225,7 @@ export default class BoardPresenter {
     });
   }
 
-  #onModelEvent = (updateType, data) => {
+  #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#moviePresenters.forEach((presenters) => {
@@ -253,7 +254,7 @@ export default class BoardPresenter {
     }
   };
 
-  #onViewAction = async (actionType, updateType, updateMovie, updateComment) => {
+  #handleViewAction = async (actionType, updateType, updateMovie, updateComment) => {
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
         this.#uiBlocker.block();
@@ -273,7 +274,6 @@ export default class BoardPresenter {
         try {
           await this.#commentsModel.addComment(updateType, updateMovie, updateComment);
           await this.#moviesModel.updateMovie(updateType, updateMovie);
-          this.#uiBlocker.unblock();
         } catch(err) {
           this.#moviePresenters.forEach((presenters) => {
             if (presenters.has(updateMovie.id)) {
@@ -284,6 +284,7 @@ export default class BoardPresenter {
             }
           });
         }
+        this.#uiBlocker.unblock();
         break;
       case UserAction.DELETE_COMMENT:
         this.#moviePresenters.forEach((presenters) => {
@@ -311,13 +312,13 @@ export default class BoardPresenter {
     }
   };
 
-  #onClickPopupReset = () => {
+  #resetPopup = () => {
     this.#moviePresenters
       .forEach((map) => [...map.values()]
         .forEach((presenter) => presenter.resetPopupView()));
   };
 
-  #onClickSortTypeChange = (sortType) => {
+  #handleSortTypeClick = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }

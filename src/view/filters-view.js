@@ -29,13 +29,17 @@ export default class FiltersView extends AbstractView {
     return createFiltersTemplate(this.#filters, this.#currentFilter);
   }
 
-  setFilterTypeChangeHandler = (callback) => {
-    this._callback.filterTypeChange = callback;
-    this.element.addEventListener('click', this.#onFilterTypeChange);
+  setFilterTypeClickHandler = (callback) => {
+    this._callback.filterTypeClick = callback;
+    const filterItems = this.element.querySelectorAll('.main-navigation__item');
+
+    for (const filterItem of filterItems) {
+      filterItem.addEventListener('click', this.#filterTypeClickHandler);
+    }
   };
 
-  #onFilterTypeChange = (evt) => {
+  #filterTypeClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.dataset.type);
+    this._callback.filterTypeClick(evt.target.dataset.type);
   };
 }
