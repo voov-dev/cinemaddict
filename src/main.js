@@ -3,11 +3,9 @@ import MoviesModel from './model/movies-model';
 import FilterModel from './model/filter-model';
 import FilterPresenter from './presenter/filter-presenter.js';
 import CommentsModel from './model/comments-model';
-import MoviesApiService from './movies-api-service';
-import CommentsApiService from './comments-api-service';
-
-const AUTHORIZATION = 'Basic wow42kik480';
-const END_POINT = 'https://17.ecmascript.pages.academy/cinemaddict';
+import MoviesApiService from './api/movies-api-service';
+import CommentsApiService from './api/comments-api-service';
+import { END_POINT, AUTHORIZATION } from './config';
 
 const bodyElement = document.querySelector('body');
 const pageMainElement = bodyElement.querySelector('.main');

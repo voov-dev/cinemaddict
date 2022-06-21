@@ -1,5 +1,5 @@
-import ApiService from './framework/api-service.js';
-import { Method } from './const.js';
+import ApiService from '../framework/api-service.js';
+import { Method } from '../const.js';
 
 export default class CommentsApiService extends ApiService {
   getComments(movieId) {
