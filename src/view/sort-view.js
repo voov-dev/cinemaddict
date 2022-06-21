@@ -21,19 +21,14 @@ export default class SortView extends AbstractView {
     return createSortViewTemplate(this.#currentSortType);
   }
 
-  setSortTypeChangeHandler = (callback) => {
+  setSortTypeClickHandler = (callback) => {
     this._callback.sortTypeChange = callback;
-    this.element.addEventListener('click', this.#sortTypeChangeHandler);
+    this.element.addEventListener('click', this.#sortTypeClickHandler);
   };
 
-  #sortTypeChangeHandler = (evt) => {
+  #sortTypeClickHandler = (evt) => {
     if (evt.target.tagName !== 'A') {
       return;
-    }
-
-    const beforeSelected = this.element.querySelector('.sort__button--active');
-    if (beforeSelected) {
-      beforeSelected.classList.remove('sort__button--active');
     }
 
     evt.preventDefault();
