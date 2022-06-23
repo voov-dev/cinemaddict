@@ -29,8 +29,4 @@ export default class UserRankView extends AbstractView {
   get template() {
     return createUserRankTemplate(this.#movies);
   }
-
-  isMoviesWatched() {
-    return getWatchedMoviesCount(this.#movies) !== 0;
-  }
 }

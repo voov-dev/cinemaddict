@@ -181,28 +181,9 @@ export default class PopupFormView extends AbstractStatefulView {
     this.element.scrollTo(0, this._position);
   };
 
-  _restoreHandlers = () => {
-    this.#setInputChangeHandlers();
-    this.setClosePopupClickHandler(this._callback.closeClick);
-    this.setAddToWatchlistClickHandler(this._callback.watchlistClick);
-    this.setAddToWatchedClickHandler(this._callback.watchedClick);
-    this.setAddToFavoriteClickHandler(this._callback.favoriteClick);
-    this.setDeleteCommentClickHandlers(this._callback.deleteClick);
-    this.setAddCommentKeyDownHandler(this._callback.addKeydown);
-  };
-
-  #setInputChangeHandlers() {
-    this.element.addEventListener('change', this.#changeCommentHandler);
-  }
-
   setClosePopupClickHandler = (callback) => {
     this._callback.closeClick = callback;
     this.element.querySelector(this.#button).addEventListener('click', this.#closePopupClickHandler);
-  };
-
-  #closePopupClickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.closeClick();
   };
 
   setAddToWatchlistClickHandler = (callback) => {
@@ -233,6 +214,15 @@ export default class PopupFormView extends AbstractStatefulView {
   setAddCommentKeyDownHandler = (callback) => {
     this._callback.addKeydown = callback;
     this.element.addEventListener('keydown', this.#addCommentKeyDownHandler);
+  };
+
+  #setInputChangeHandlers() {
+    this.element.addEventListener('change', this.#changeCommentHandler);
+  }
+
+  #closePopupClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.closeClick();
   };
 
   #addToWatchlistClickHandler = (evt) => {
@@ -282,5 +272,15 @@ export default class PopupFormView extends AbstractStatefulView {
 
       this._callback.addKeydown(this.#movie, comment);
     }
+  };
+
+  _restoreHandlers = () => {
+    this.#setInputChangeHandlers();
+    this.setClosePopupClickHandler(this._callback.closeClick);
+    this.setAddToWatchlistClickHandler(this._callback.watchlistClick);
+    this.setAddToWatchedClickHandler(this._callback.watchedClick);
+    this.setAddToFavoriteClickHandler(this._callback.favoriteClick);
+    this.setDeleteCommentClickHandlers(this._callback.deleteClick);
+    this.setAddCommentKeyDownHandler(this._callback.addKeydown);
   };
 }

@@ -90,21 +90,17 @@ export default class BoardPresenter {
     this.#renderBoard();
   }
 
-  #renderSorting() {
-    this.#sortComponent = new SortView(this.#currentSortType);
-    this.#sortComponent.setSortTypeClickHandler(this.#handleSortTypeClick);
-    render(this.#sortComponent, this.#moviesContainer);
-  }
-
   #renderLoading() {
     render(this.#moviesComponent, this.#moviesContainer);
     render(this.#moviesListComponent, this.#moviesComponent.element);
     render(this.#loadingMoviesComponent, this.#moviesListComponent.element);
   }
 
-  #renderMovies = (movies, container, mapPresenters) => {
-    movies.forEach((movie) => this.#renderMovie(movie, container, mapPresenters));
-  };
+  #renderSorting() {
+    this.#sortComponent = new SortView(this.#currentSortType);
+    this.#sortComponent.setSortTypeClickHandler(this.#handleSortTypeClick);
+    render(this.#sortComponent, this.#moviesContainer);
+  }
 
   #renderMovie(movie, container, mapPresenters) {
     if (mapPresenters.has(movie.id)) {
@@ -117,6 +113,10 @@ export default class BoardPresenter {
     moviePresenter.init(movie);
     mapPresenters.set(movie.id, moviePresenter);
   }
+
+  #renderMovies = (movies, container, mapPresenters) => {
+    movies.forEach((movie) => this.#renderMovie(movie, container, mapPresenters));
+  };
 
   #renderShowMoreButton() {
     this.#buttonShowMoreComponent = new ButtonShowMoreView();
@@ -174,9 +174,7 @@ export default class BoardPresenter {
     }
 
     this.#userRankComponent = new UserRankView(this.#moviesModel.movies);
-    if (this.#userRankComponent.isMoviesWatched()) {
-      render(this.#userRankComponent, siteHeaderElement);
-    }
+    render(this.#userRankComponent, siteHeaderElement);
 
     if (moviesCount === 0) {
       this.#moviesListEmptyComponent = new MoviesListEmptyView(this.#filterType);
@@ -203,6 +201,63 @@ export default class BoardPresenter {
     render(this.#moviesStatisticsComponent, siteFooterStatisticsElement);
   }
 
+  #clearBoard({resetPresenters = true, resetRenderedMoviesCount = false, resetSortType = false} = {}) {
+    const moviesCount = this.movies.length;
+
+    if (resetPresenters) {
+      this.#moviePresenters
+        .forEach((map) => {
+          [...map.values()].forEach((presenter) => presenter.destroy());
+          map.clear();
+        });
+    }
+
+    remove(this.#sortComponent);
+    remove(this.#buttonShowMoreComponent);
+    remove(this.#loadingMoviesComponent);
+    remove(this.#moviesExtraListCommentedComponent);
+    remove(this.#moviesExtraListRatedComponent);
+    remove(this.#userRankComponent);
+    remove(this.#moviesStatisticsComponent);
+
+    this.#moviesListContainerComponent.clear();
+    this.#moviesListContainerRatedComponent.clear();
+    this.#moviesListContainerCommentedComponent.clear();
+
+    if (this.#moviesListEmptyComponent) {
+      remove(this.#moviesListEmptyComponent);
+    }
+
+    if (resetRenderedMoviesCount) {
+      this.#renderedMoviesCount = MOVIES_COUNT_PER_STEP;
+    } else {
+      this.#renderedMoviesCount = Math.min(moviesCount, this.#renderedMoviesCount);
+    }
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DEFAULT;
+    }
+  }
+
+  #resetPopup = () => {
+    this.#moviePresenters
+      .forEach((map) => [...map.values()]
+        .forEach((presenter) => presenter.resetPopupView()));
+  };
+
+  #updatePopup(data) {
+    this.#moviePresenters.forEach((presenters) => {
+      const moviePresenter = presenters.get(data.id);
+      if (moviePresenter && moviePresenter.isOpenedPopup()) {
+        moviePresenter.openPopup(data);
+      }
+    });
+  }
+
+  #clearMostCommented() {
+    this.#moviesListContainerCommentedComponent.clear();
+  }
+
   #handleShowMoviesClick = () => {
     const moviesCount = this.movies.length;
     const newRenderedMoviesCount = Math.min(moviesCount, this.#renderedMoviesCount + MOVIES_COUNT_PER_STEP);
@@ -215,15 +270,6 @@ export default class BoardPresenter {
       remove(this.#buttonShowMoreComponent);
     }
   };
-
-  #updatePopup(data) {
-    this.#moviePresenters.forEach((presenters) => {
-      const moviePresenter = presenters.get(data.id);
-      if (moviePresenter && moviePresenter.isOpenedPopup()) {
-        moviePresenter.openPopup(data);
-      }
-    });
-  }
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
@@ -312,12 +358,6 @@ export default class BoardPresenter {
     }
   };
 
-  #resetPopup = () => {
-    this.#moviePresenters
-      .forEach((map) => [...map.values()]
-        .forEach((presenter) => presenter.resetPopupView()));
-  };
-
   #handleSortTypeClick = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
@@ -327,46 +367,4 @@ export default class BoardPresenter {
     this.#clearBoard({resetRenderedMoviesCount: true});
     this.#renderBoard();
   };
-
-  #clearBoard({resetPresenters = true, resetRenderedMoviesCount = false, resetSortType = false} = {}) {
-    const moviesCount = this.movies.length;
-
-    if (resetPresenters) {
-      this.#moviePresenters
-        .forEach((map) => {
-          [...map.values()].forEach((presenter) => presenter.destroy());
-          map.clear();
-        });
-    }
-
-    remove(this.#sortComponent);
-    remove(this.#buttonShowMoreComponent);
-    remove(this.#loadingMoviesComponent);
-    remove(this.#moviesExtraListCommentedComponent);
-    remove(this.#moviesExtraListRatedComponent);
-    remove(this.#userRankComponent);
-    remove(this.#moviesStatisticsComponent);
-
-    this.#moviesListContainerComponent.clear();
-    this.#moviesListContainerRatedComponent.clear();
-    this.#moviesListContainerCommentedComponent.clear();
-
-    if (this.#moviesListEmptyComponent) {
-      remove(this.#moviesListEmptyComponent);
-    }
-
-    if (resetRenderedMoviesCount) {
-      this.#renderedMoviesCount = MOVIES_COUNT_PER_STEP;
-    } else {
-      this.#renderedMoviesCount = Math.min(moviesCount, this.#renderedMoviesCount);
-    }
-
-    if (resetSortType) {
-      this.#currentSortType = SortType.DEFAULT;
-    }
-  }
-
-  #clearMostCommented() {
-    this.#moviesListContainerCommentedComponent.clear();
-  }
 }

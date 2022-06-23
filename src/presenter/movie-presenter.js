@@ -28,6 +28,22 @@ export default class MoviePresenter {
     this.#commentsModel.addObserver(this.#changeData);
   }
 
+  setSaving() {
+    this.#popupFormComponent.updateElement({isFormDisabled: true, isButtonDisabled: true});
+  }
+
+  setDeleting(comment) {
+    this.#popupFormComponent.updateElement({isFormDisabled: true, isButtonDisabled: true, deletingId: comment});
+  }
+
+  setAborting() {
+    const resetPopupForm = () => {
+      this.#popupFormComponent.updateElement({isFormDisabled: false, isButtonDisabled: false, deletingId: ''});
+    };
+
+    this.#popupFormComponent.shake(resetPopupForm);
+  }
+
   init(movie) {
     this.#movie = movie;
     const prevMovieCardComponent = this.#movieCardComponent;
@@ -60,27 +76,6 @@ export default class MoviePresenter {
     }
   }
 
-  #handleMovieClick() {
-    this.openPopup();
-  }
-
-  #closePopup() {
-    remove(this.#popupSectionComponent);
-    this.#popupContainer.classList.remove('hide-overflow');
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
-    this.#popupSectionComponent = null;
-  }
-
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      this.#closePopup(this.#escKeyDownHandler);
-    }
-  };
-
-  isOpenedPopup() {
-    return !!this.#popupSectionComponent;
-  }
-
   openPopup = async (data = this.#movie) => {
     const comments = await this.#commentsModel.init(this.#movie.id).then(() => this.#commentsModel.comments);
     this.#movie = data;
@@ -106,10 +101,6 @@ export default class MoviePresenter {
     }
   };
 
-  #handleClosePopupClick = () => {
-    this.#closePopup(this.#escKeyDownHandler);
-  };
-
   resetPopupView = () => {
     if (this.#popupSectionComponent === null) {
       return;
@@ -118,30 +109,35 @@ export default class MoviePresenter {
     this.#closePopup(this.#escKeyDownHandler);
   };
 
-  setSaving() {
-    this.#popupFormComponent.updateElement({isFormDisabled: true, isButtonDisabled: true});
+  isOpenedPopup() {
+    return !!this.#popupSectionComponent;
   }
 
-  setDeleting(comment) {
-    this.#popupFormComponent.updateElement({isFormDisabled: true, isButtonDisabled: true, deletingId: comment});
+  destroy = () => {
+    remove(this.#movieCardComponent);
+    remove(this.#popupSectionComponent);
+  };
+
+  #closePopup() {
+    remove(this.#popupSectionComponent);
+    this.#popupContainer.classList.remove('hide-overflow');
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#popupSectionComponent = null;
   }
 
-  setAborting() {
-    const resetPopupForm = () => {
-      this.#popupFormComponent.updateElement({isFormDisabled: false, isButtonDisabled: false, deletingId: ''});
-    };
-
-    this.#popupFormComponent.shake(resetPopupForm);
-  }
-
-  #customUpdateElement(isSavingUserInfo, userAction, updateType, movie, comment) {
-    if (this.#popupSectionComponent) {
-      this.#scrollPosition = this.#popupSectionComponent.element.scrollTop;
-      this.#popupFormInfo = isSavingUserInfo ? this.#popupFormComponent._state : '';
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      this.#closePopup(this.#escKeyDownHandler);
     }
+  };
 
-    this.#changeData(userAction, updateType, movie, comment);
+  #handleMovieClick() {
+    this.openPopup();
   }
+
+  #handleClosePopupClick = () => {
+    this.#closePopup(this.#escKeyDownHandler);
+  };
 
   #handleAddToWatchlistClick = () => {
     this.#customUpdateElement(
@@ -167,14 +163,6 @@ export default class MoviePresenter {
       {...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite}});
   };
 
-  #handleDeleteCommentClick = (movie, comment) => {
-    this.#customUpdateElement(
-      true,
-      UserAction.DELETE_COMMENT,
-      UpdateType.PATCH,
-      movie, comment);
-  };
-
   #handleAddCommentKeyDown = (movie, comment) => {
     this.#customUpdateElement(
       false,
@@ -183,8 +171,20 @@ export default class MoviePresenter {
       movie, comment);
   };
 
-  destroy = () => {
-    remove(this.#movieCardComponent);
-    remove(this.#popupSectionComponent);
+  #handleDeleteCommentClick = (movie, comment) => {
+    this.#customUpdateElement(
+      true,
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      movie, comment);
   };
+
+  #customUpdateElement(isSavingUserInfo, userAction, updateType, movie, comment) {
+    if (this.#popupSectionComponent) {
+      this.#scrollPosition = this.#popupSectionComponent.element.scrollTop;
+      this.#popupFormInfo = isSavingUserInfo ? this.#popupFormComponent._state : '';
+    }
+
+    this.#changeData(userAction, updateType, movie, comment);
+  }
 }
